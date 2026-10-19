@@ -1,0 +1,23 @@
+
+name: ecommerce_dbt_staging
+version: "1.0.0"
+config-version: 2
+
+profile: ecommerce
+
+model-paths: ["models"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+
+models:
+  ecommerce_dbt_staging:
+    staging:
+      +schema: STAGING
+      +materialized: view
+    marts:
+      +schema: MARTS
+      +materialized: view
+

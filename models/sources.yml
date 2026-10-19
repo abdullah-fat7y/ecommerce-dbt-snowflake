@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: ecommerce_raw
+    database: ECOMMERCE_DB
+    schema: RAW
+    description: "Original e-commerce CSV data loaded into Snowflake."
+    tables:
+      - name: CUSTOMERS
+        description: "Raw customer information."
+      - name: PRODUCTS
+        description: "Raw product catalog."
+      - name: ORDERS
+        description: "Raw customer orders."

@@ -1,0 +1,27 @@
+WITH source_data AS (
+
+    SELECT
+        TRIM(PRODUCT_ID) AS PRODUCT_ID,
+        TRIM(PRODUCT_NAME) AS PRODUCT_NAME,
+        TRIM(CATEGORY) AS CATEGORY,
+        TRIM(PRICE) AS PRICE
+    FROM {{ source('ecommerce_raw', 'PRODUCTS') }}
+
+),
+
+cleaned AS (
+
+    SELECT
+        TRY_TO_NUMBER(PRODUCT_ID) AS PRODUCT_ID,
+        NULLIF(PRODUCT_NAME, '') AS PRODUCT_NAME,
+        NULLIF(CATEGORY, '') AS CATEGORY,
+        TRY_TO_DECIMAL(PRICE, 10, 2) AS PRICE
+    FROM source_data
+
+)
+
+SELECT *
+FROM cleaned
+WHERE PRODUCT_ID IS NOT NULL
+  AND PRODUCT_NAME IS NOT NULL
+  AND PRICE > 0

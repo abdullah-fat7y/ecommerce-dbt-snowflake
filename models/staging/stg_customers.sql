@@ -1,0 +1,33 @@
+WITH source_data AS (
+
+    SELECT
+        TRIM(CUSTOMER_ID) AS CUSTOMER_ID,
+        TRIM(NAME) AS CUSTOMER_NAME,
+        LOWER(TRIM(EMAIL)) AS EMAIL,
+        TRIM(CITY) AS CITY,
+        COALESCE(
+            TRY_TO_DATE(TRIM(SIGNUP_DATE), 'YYYY-MM-DD'),
+            TRY_TO_DATE(TRIM(SIGNUP_DATE), 'MM/DD/YYYY'),
+            TRY_TO_DATE(TRIM(SIGNUP_DATE), 'DD/MM/YYYY')
+        ) AS SIGNUP_DATE
+    FROM {{ source('ecommerce_raw', 'CUSTOMERS') }}
+
+),
+
+cleaned AS (
+
+    SELECT
+        TRY_TO_NUMBER(CUSTOMER_ID) AS CUSTOMER_ID,
+        NULLIF(CUSTOMER_NAME, '') AS CUSTOMER_NAME,
+        NULLIF(EMAIL, '') AS EMAIL,
+        NULLIF(CITY, '') AS CITY,
+        SIGNUP_DATE
+    FROM source_data
+
+)
+
+SELECT *
+FROM cleaned
+WHERE CUSTOMER_ID IS NOT NULL
+  AND CUSTOMER_NAME IS NOT NULL
+  AND SIGNUP_DATE IS NOT NULL
